@@ -294,7 +294,6 @@ public class AdminFrame extends JFrame {
 			}
 		};
 
-		// TODO : Sự kiện double click trên cell --> thêm món
 		tableDrink.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseReleased(MouseEvent e) {
@@ -485,7 +484,8 @@ public class AdminFrame extends JFrame {
 					int id = Integer.parseInt(tableID);
 					if (id > 0) {
 						// Kiểm tra bàn có khách không
-						String sql = "SELECT * FROM coffeeshop.chonban where NgayGioTra is null and MaBan =" + tableID;
+						String sql = "SELECT * FROM coffeeshop.chonban where NgayGioTra is null and MaBan =" + tableID
+								+ " ORDER BY NgayGioDen DESC LIMIT 1";
 						conn = DBConnection.getConnection();
 						statement = conn.createStatement();
 						rs = statement.executeQuery(sql);
@@ -505,6 +505,7 @@ public class AdminFrame extends JFrame {
 					}
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
+					System.out.println(e1.getMessage());
 				} catch (NumberFormatException e2) {
 					// TODO: handle exception
 					Message.messageBox("Vui lòng chọn bàn trống", "THÔNG BÁO");
@@ -806,8 +807,6 @@ public class AdminFrame extends JFrame {
 										conn = DBConnection.getConnection();
 										statement = conn.createStatement();
 										statement.executeUpdate(sql);
-									} else {
-										System.out.println("Chua chon ban");
 									}
 									statement.close();
 									rs.close();
@@ -831,7 +830,7 @@ public class AdminFrame extends JFrame {
 									statement.close();
 									conn.close();
 								}
-								loadOrdered(Integer.parseInt(tableID));
+								soHD = -1;
 								Message.messageBox("Thêm món thành công", "THÔNG BÁO");
 							} catch (SQLException e1) {
 								// TODO Auto-generated catch block
@@ -979,6 +978,8 @@ public class AdminFrame extends JFrame {
 				// TODO: Thành tiền
 				lblTotalPrice.setText(total + "");
 				System.out.println("SoHD: " + soHD);
+			} else {
+				soHD = -1;
 			}
 			statement.close();
 			conn.close();

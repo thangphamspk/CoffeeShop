@@ -115,9 +115,10 @@ public class AddOrder extends JFrame {
 						rs.next();
 						statement.close();
 						conn.close();
+						MaKH = -1;
 						dispose();
 						new AdminFrame();
-						
+
 					} catch (SQLException e1) {
 						// TODO Auto-generated catch block
 						System.out.println(e1.getMessage());

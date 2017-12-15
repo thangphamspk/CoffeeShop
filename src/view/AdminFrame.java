@@ -977,7 +977,6 @@ public class AdminFrame extends JFrame {
 				}
 				// TODO: Thành tiền
 				lblTotalPrice.setText(total + "");
-				System.out.println("SoHD: " + soHD);
 			} else {
 				soHD = -1;
 			}

@@ -63,8 +63,8 @@ public class AdminFrame extends JFrame {
 	private double drinkPrice;
 	public static String tableID;
 	public static int soHD;
-	private JTabbedPane tabbedPane;
-	
+	private static JTabbedPane tabbedPane;
+
 	/**
 	 * Create the frame.
 	 */
@@ -484,6 +484,7 @@ public class AdminFrame extends JFrame {
 				try {
 					int id = Integer.parseInt(tableID);
 					if (id > 0) {
+						// Kiểm tra bàn có khách không
 						String sql = "SELECT * FROM coffeeshop.chonban where NgayGioTra is null and MaBan =" + tableID;
 						conn = DBConnection.getConnection();
 						statement = conn.createStatement();
@@ -665,6 +666,7 @@ public class AdminFrame extends JFrame {
 							conn2.close();
 							// Cập nhật lại tổng tiền trong bảng hoá đơn
 							if (soHD > 0) {
+								loadOrdered(Integer.parseInt(tableID));
 								double trigia = Double.parseDouble(lblTotalPrice.getText());
 								conn = DBConnection.getConnection();
 								String sql = "UPDATE hoadon SET TriGia =" + trigia + "WHERE SoHD = " + soHD;
@@ -780,23 +782,56 @@ public class AdminFrame extends JFrame {
 
 								// Kiểm tra bàn đã có hoá đơn chưa
 								if (soHD <= 0) {
-									// Lấy số hoá đơn vừa được tạo ra
-									String sql = "SELECT SoHD FROM hoadon WHERE TriGia = 0 ORDER BY SoHD DESC LIMIT 1";
+									// Lấy số hoá đơn cuối cùng trong bảng để tạo ra số hoá đơn mới
+									String sql = "SELECT SoHD FROM hoadon ORDER BY SoHD DESC LIMIT 1";
 									conn = DBConnection.getConnection();
 									statement = conn.createStatement();
 									rs = statement.executeQuery(sql);
 									if (rs.next()) {
-										soHD = rs.getInt(1);
+										soHD = rs.getInt(1) + 1;
+									} else {
+										soHD = 1;
+									}
+
+									statement.close();
+									conn.close();
+									if (soHD > 0) {
+										// Bàn chưa có hoá đơn, tạo ra số hoá đơn mới
+										df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+										calobj = Calendar.getInstance();
+										String thoidiem = df.format(calobj.getTime()).toString();
+										int MaNV = user.getId();
+										sql = "INSERT INTO hoadon VALUES(" + soHD + ",0.0," + MaNV + "," + MaKH + ",'"
+												+ thoidiem + "');";
+										conn = DBConnection.getConnection();
+										statement = conn.createStatement();
+										statement.executeUpdate(sql);
+									} else {
+										System.out.println("Chua chon ban");
 									}
 									statement.close();
 									rs.close();
-								}
 
-								String sql2 = "insert into coffeeshop.chitiethoadon values(" + soHD + "," + MaTU + ","
-										+ number + ",'" + df.format(calobj.getTime()) + "')";
-								Connection conn2 = DBConnection.getConnection();
-								Statement stm2 = conn2.createStatement();
-								stm2.executeUpdate(sql2);
+								}
+								if (soHD > 0) {
+									// Thêm món
+									String sql2 = "insert into coffeeshop.chitiethoadon values(" + soHD + "," + MaTU
+											+ "," + number + ",'" + df.format(calobj.getTime()) + "')";
+									Connection conn2 = DBConnection.getConnection();
+									Statement stm2 = conn2.createStatement();
+									stm2.executeUpdate(sql2);
+								}
+								// Cập nhật lại tổng tiền trong bảng hoá đơn
+								if (soHD > 0) {
+									double trigia = Double.parseDouble(lblTotalPrice.getText());
+									conn = DBConnection.getConnection();
+									String sql = "UPDATE hoadon SET TriGia =" + trigia + "WHERE SoHD = " + soHD;
+									statement = conn.createStatement();
+									statement.executeUpdate(sql);
+									statement.close();
+									conn.close();
+								}
+								loadOrdered(Integer.parseInt(tableID));
 								Message.messageBox("Thêm món thành công", "THÔNG BÁO");
 							} catch (SQLException e1) {
 								// TODO Auto-generated catch block
@@ -812,6 +847,7 @@ public class AdminFrame extends JFrame {
 					Message.messageBox("Vui lòng chọn bàn !!!!", "THÔNG BÁO");
 				}
 			}
+
 		});
 		panelAddDrink.add(btnAddDrink);
 
@@ -838,6 +874,31 @@ public class AdminFrame extends JFrame {
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBounds(0, 98, 988, 766);
 
+		// TODO: Load khu và bàn từ csdl
+		loadTable();
+		contentPane.add(tabbedPane);
+
+		loadDrink();
+
+		// Mặc định load tiêu đề cột lên
+		loadOrdered(-1);
+		setResizable(false);
+		setLocationRelativeTo(null);
+		setVisible(true);
+
+		// TODO: PHÂN QUYỀN
+		// Phân quyền chỉ Admin mới có quyền quản lý nhân viên
+		if (user.getPermission().toLowerCase().equals("admin")) {
+
+		} else if (user.getPermission().toLowerCase().equals("staff")) {
+			mntmStaffManager.setEnabled(false);
+			// mntmCustomerManager.setEnabled(false);
+			// mntmSupplierManager.setEnabled(false);
+			// mntmDrinkManager.setEnabled(false);
+		}
+	}
+
+	public static void loadTable() {
 		// LOAD KHU TỪ CSDL
 		int soKhu = 0;
 		try {
@@ -861,27 +922,6 @@ public class AdminFrame extends JFrame {
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
 		}
-
-		contentPane.add(tabbedPane);
-
-		loadDrink();
-
-		// Mặc định load tiêu đề cột lên
-		loadOrdered(-1);
-		setResizable(false);
-		setLocationRelativeTo(null);
-		setVisible(true);
-		
-		//TODO: PHÂN QUYỀN
-		// Phân quyền chỉ Admin mới có quyền quản lý nhân viên
-		if (user.getPermission().toLowerCase().equals("admin")) {
-			
-		} else if (user.getPermission().toLowerCase().equals("staff")) {
-			mntmStaffManager.setEnabled(false);
-			//mntmCustomerManager.setEnabled(false);
-			//mntmSupplierManager.setEnabled(false);
-			//mntmDrinkManager.setEnabled(false);
-		}
 	}
 
 	// TODO : Lấy chi tiết hoá đơn của từng bàn vào bảng
@@ -897,6 +937,7 @@ public class AdminFrame extends JFrame {
 		vtColumn.add("Thành tiền");
 		vtColumn.add("MaTU");
 		vtColumn.add("Gia");
+		soHD = -1;
 		double total = 0;
 		try {
 			conn = DBConnection.getConnection();
@@ -905,7 +946,8 @@ public class AdminFrame extends JFrame {
 			String sql = "SELECT TenTU,GiaBan,chitiethoadon.SoLuong,Chitiethoadon.SoHD, thucuong.MaTU FROM"
 					+ " thucuong,chitiethoadon,hoadon,chonban,ban " + "WHERE thucuong.MaTU = chitiethoadon.MaTU "
 					+ "AND chitiethoadon.SoHD = hoadon.SoHD " + "AND hoadon.MaKH= chonban.MaKH "
-					+ "AND chonban.MaBan= ban.MaBan AND chonban.NgayGioTra IS NULL AND ban.MaBan=" + MaBan;
+					+ "AND chonban.MaBan= ban.MaBan AND chonban.NgayGioTra IS NULL AND ban.MaBan=" + MaBan
+					+ " ORDER BY chonban.NgayGioDen";
 			rs = statement.executeQuery(sql);
 			if (rs != null) {
 				while (rs.next()) {
@@ -936,10 +978,8 @@ public class AdminFrame extends JFrame {
 				}
 				// TODO: Thành tiền
 				lblTotalPrice.setText(total + "");
-				if (soHD > 0)
-					System.out.println("SoHD: " + soHD);
+				System.out.println("SoHD: " + soHD);
 			}
-
 			statement.close();
 			conn.close();
 

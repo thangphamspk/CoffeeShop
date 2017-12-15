@@ -1,8 +1,6 @@
 eclipse.preferences.version=1
 encoding//src/controller/Login.java=UTF-8
-encoding//src/view/AddOrder.java=UTF-8
 encoding//src/view/AddTable.java=UTF-8
-encoding//src/view/AdminFrame.java=UTF-8
 encoding//src/view/CustomerManager.java=UTF-8
 encoding//src/view/DrinkManager.java=UTF-8
 encoding//src/view/LoginFrame.java=UTF-8

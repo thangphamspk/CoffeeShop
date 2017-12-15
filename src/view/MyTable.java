@@ -135,6 +135,7 @@ public class MyTable extends JPanel implements MouseListener {
 					AdminFrame.lblCustomerName.setText("");
 				}
 			}
+
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -144,7 +145,6 @@ public class MyTable extends JPanel implements MouseListener {
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override

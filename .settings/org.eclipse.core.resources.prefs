@@ -1,3 +1,14 @@
 eclipse.preferences.version=1
 encoding//src/controller/Login.java=UTF-8
+encoding//src/view/AddOrder.java=UTF-8
+encoding//src/view/AddTable.java=UTF-8
+encoding//src/view/AdminFrame.java=UTF-8
+encoding//src/view/CustomerManager.java=UTF-8
+encoding//src/view/DrinkManager.java=UTF-8
 encoding//src/view/LoginFrame.java=UTF-8
+encoding//src/view/MyArea.java=UTF-8
+encoding//src/view/MyTable.java=UTF-8
+encoding//src/view/PaidOrder.java=UTF-8
+encoding//src/view/SearchStaff.java=UTF-8
+encoding//src/view/StaffManager.java=UTF-8
+encoding//src/view/SupplierManager.java=UTF-8

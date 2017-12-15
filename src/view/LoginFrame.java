@@ -4,16 +4,15 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-
 import controller.Login;
-
+import model.User;
 import javax.swing.JPasswordField;
+import javax.swing.JPanel;
 
 public class LoginFrame extends JFrame {
 
@@ -23,7 +22,7 @@ public class LoginFrame extends JFrame {
 	private static final long serialVersionUID = 2691377709695770639L;
 	private JTextField txtUser;
 	private JPasswordField txtPassword;
-	private JButton btnReset, btnLogin;
+	private JButton btnReset, btnLogin, btnExit;
 
 	ActionListener listener = new ActionListener() {
 
@@ -36,13 +35,15 @@ public class LoginFrame extends JFrame {
 				txtPassword.setText("");
 				txtUser.requestFocus();
 
+			} else if (e.getActionCommand().equals("Exit")) {
+				System.exit(1);
 			} else {
 				// Đăng nhập hệ thống
 				String username = txtUser.getText().toString().trim();
 				String password = new String(txtPassword.getPassword());
 				if (username.length() > 0 && password.length() > 0) {
-					boolean flag = Login.doLogin(username, password);
-					if (flag) {
+					User user = Login.doLogin(username, password);
+					if (user != null) {
 						// Đóng login form
 						dispose();
 						// Mở trang quản trị
@@ -50,7 +51,7 @@ public class LoginFrame extends JFrame {
 						admin.setVisible(true);
 
 					} else {
-						Message.messageBox("Username or password not match !!!!", "Error");
+						Message.messageBox("Username or password does not match !!!!", "Error");
 					}
 				}
 			}
@@ -65,7 +66,7 @@ public class LoginFrame extends JFrame {
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		getContentPane().setLayout(null);
-		JLabel lblTitle = new JLabel("COFFEESHOP MANAGERMENT");
+		JLabel lblTitle = new JLabel("COFFEE HOUSE MANAGERMENT");
 		lblTitle.setForeground(Color.WHITE);
 		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 30));
@@ -80,6 +81,8 @@ public class LoginFrame extends JFrame {
 		getContentPane().add(lblUser);
 
 		txtUser = new JTextField();
+		txtUser.setText("admin");
+		txtUser.setFont(new Font("Tahoma", Font.BOLD, 16));
 		txtUser.setBounds(150, 65, 410, 30);
 		getContentPane().add(txtUser);
 		txtUser.setColumns(10);
@@ -90,23 +93,38 @@ public class LoginFrame extends JFrame {
 		getContentPane().add(lblPassword);
 
 		txtPassword = new JPasswordField();
+		txtPassword.setFont(new Font("Tahoma", Font.BOLD, 16));
 		txtPassword.setColumns(10);
+		txtPassword.setText("123456");
 		txtPassword.setBounds(150, 115, 410, 30);
 		getContentPane().add(txtPassword);
 
+		JPanel panel = new JPanel();
+		panel.setBounds(150, 178, 410, 46);
+		getContentPane().add(panel);
+		panel.setLayout(null);
+
 		btnReset = new JButton("Reset");
-		btnReset.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		btnReset.setBounds(328, 182, 100, 30);
+		btnReset.setBounds(154, 5, 100, 35);
+		panel.add(btnReset);
+		btnReset.setFont(new Font("Tahoma", Font.BOLD, 16));
 		btnReset.setActionCommand("Reset");
 		btnReset.addActionListener(listener);
-		getContentPane().add(btnReset);
+
+		btnExit = new JButton("Exit");
+		btnExit.setBounds(310, 5, 100, 35);
+		panel.add(btnExit);
+		btnExit.setFont(new Font("Tahoma", Font.BOLD, 16));
+		btnExit.setActionCommand("Exit");
+		btnExit.addActionListener(listener);
 
 		btnLogin = new JButton("Login");
-		btnLogin.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		btnLogin.setBounds(460, 182, 100, 30);
+		btnLogin.setBounds(0, 5, 100, 35);
+		panel.add(btnLogin);
+		btnLogin.setFont(new Font("Tahoma", Font.BOLD, 16));
 		btnLogin.setActionCommand("Login");
 		btnLogin.addActionListener(listener);
-		getContentPane().add(btnLogin);
+		setResizable(false);
 		setVisible(true);
 	}
 }

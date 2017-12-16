@@ -166,7 +166,7 @@ public class AddOrder extends JFrame {
 	private void loadCustomer() {
 
 		try {
-			String sql = "SELECT MaKH, HotenKH FROM khachhang";
+			String sql = "SELECT MaKH, HotenKH FROM khachhang where MaKH not in (select MaKH from chonban)";
 			conn = DBConnection.getConnection();
 			statement = conn.createStatement();
 			rs = statement.executeQuery(sql);

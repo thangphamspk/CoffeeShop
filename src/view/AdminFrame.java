@@ -483,24 +483,37 @@ public class AdminFrame extends JFrame {
 				try {
 					int id = Integer.parseInt(tableID);
 					if (id > 0) {
-						// Kiểm tra bàn có khách không
-						String sql = "SELECT * FROM coffeeshop.chonban where NgayGioTra is null and MaBan =" + tableID
-								+ " ORDER BY NgayGioDen DESC LIMIT 1";
+						// Kiểm tra xem bàn có khả dụng không
+						String sql = "SELECT TrangThai FROM coffeeshop.ban where MaBan =" + id;
 						conn = DBConnection.getConnection();
 						statement = conn.createStatement();
 						rs = statement.executeQuery(sql);
-						boolean kt = false;
+						boolean TrangThai = true;
 						if (rs.next()) {
-							kt = true;
+							TrangThai = rs.getBoolean(1);
 						}
-						if (kt == true) {
-							Message.messageBox("Bàn đang có khách không thể tạo hoá đơn mới", "THÔN BÁO");
+						if (TrangThai == true) {
+							// Kiểm tra bàn có khách không
+							sql = "SELECT * FROM coffeeshop.chonban where NgayGioTra is null and MaBan =" + tableID
+									+ " ORDER BY NgayGioDen DESC LIMIT 1";
+							conn = DBConnection.getConnection();
+							statement = conn.createStatement();
+							rs = statement.executeQuery(sql);
+							boolean kt = false;
+							if (rs.next()) {
+								kt = true;
+							}
+							if (kt == true) {
+								Message.messageBox("Bàn đang có khách không thể tạo hoá đơn mới", "THÔN BÁO");
+							} else {
+								// Tạo hoá đơn cho khách hàng
+								AddOrder.tableID = Integer.parseInt(tableID);
+								AddOrder.MaNV = user.getId();
+								dispose();
+								new AddOrder();
+							}
 						} else {
-							// Tạo hoá đơn cho khách hàng
-							AddOrder.tableID = Integer.parseInt(tableID);
-							AddOrder.MaNV = user.getId();
-							dispose();
-							new AddOrder();
+							Message.messageBox("Bàn đang hư vui lòng chọn bàn khác.", "THÔNG BÁO");
 						}
 					}
 				} catch (SQLException e1) {

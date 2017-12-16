@@ -67,7 +67,7 @@ CREATE TABLE `chitiethoadon` (
 
 /*Data for the table `chitiethoadon` */
 
-insert  into `chitiethoadon`(`SoHD`,`MaTU`,`SoLuong`,`NgayLap`) values (1,6,1,'2017-12-15 23:38:29'),(3,8,1,'2017-12-15 23:38:43');
+insert  into `chitiethoadon`(`SoHD`,`MaTU`,`SoLuong`,`NgayLap`) values (1,6,1,'2017-12-15 23:38:29'),(3,8,1,'2017-12-15 23:38:43'),(5,3,2,'2017-12-16 09:23:45'),(5,7,2,'2017-12-16 09:23:39');
 
 /*Table structure for table `chitiethoadonmangve` */
 
@@ -126,7 +126,7 @@ CREATE TABLE `chonban` (
 
 /*Data for the table `chonban` */
 
-insert  into `chonban`(`MaKH`,`NgayGioDen`,`MaBan`,`NgayGioTra`) values (1,'2017-12-15 23:38:40',3,NULL),(28,'2017-12-15 23:38:26',1,NULL);
+insert  into `chonban`(`MaKH`,`NgayGioDen`,`MaBan`,`NgayGioTra`) values (1,'2017-12-15 23:38:40',3,NULL),(2,'2017-12-16 09:23:33',4,NULL),(28,'2017-12-15 23:38:26',1,NULL);
 
 /*Table structure for table `hoadon` */
 
@@ -146,7 +146,7 @@ CREATE TABLE `hoadon` (
 
 /*Data for the table `hoadon` */
 
-insert  into `hoadon`(`SoHD`,`TriGia`,`MaNV`,`MaKH`,`ThoiDiem`) values (1,25000,1,28,'2017-12-15 23:38:29'),(2,0,1,1,'2017-12-15 23:38:40'),(3,25000,1,1,'2017-12-15 23:38:43');
+insert  into `hoadon`(`SoHD`,`TriGia`,`MaNV`,`MaKH`,`ThoiDiem`) values (1,25000,1,28,'2017-12-15 23:38:29'),(2,0,1,1,'2017-12-15 23:38:40'),(3,25000,1,1,'2017-12-15 23:38:43'),(4,0,1,2,'2017-12-16 09:23:33'),(5,86000,1,2,'2017-12-16 09:23:39');
 
 /*Table structure for table `hoadonmangve` */
 

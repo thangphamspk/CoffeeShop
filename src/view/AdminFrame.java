@@ -413,7 +413,6 @@ public class AdminFrame extends JFrame {
 						date = rs.getString(1);
 					}
 					if (date != null) {
-						System.out.println(date);
 						sql = "update ban set TrangThai = 0 where MaBan =" + tableID;
 						conn = DBConnection.getConnection();
 						statement = conn.createStatement();
@@ -659,64 +658,59 @@ public class AdminFrame extends JFrame {
 						double tt = Double.parseDouble(tableOrdered.getValueAt(index, 2).toString());
 						double gia = Double.parseDouble(tableOrdered.getValueAt(index, 4).toString());
 						int current = (int) (tt / gia);
-						if (soluong < current) {
-							Message.messageBox("Số lượng không hợp lệ", "THÔNG BÁO");
-							soluong = current;
-							tableOrdered.setValueAt(soluong, index, 1);
-							tableModelOrdered.fireTableDataChanged();
-
+						if (soluong <= current) {
+							Message.messageBox("Số lượng không được nhỏ hơn số lượng hiện tại.", "THÔNG BÁO");
 						} else {
-							gia = Double.parseDouble(tableOrdered.getValueAt(index, 4).toString());
-							tableOrdered.setValueAt((soluong * gia), index, 2);
-							tableModelOrdered.fireTableDataChanged();
-							// Lưu thông tin thay đổi chitiethoadon xuống CSDL
-							int MaTU = Integer.parseInt(tableOrdered.getValueAt(index, 3).toString());
-							String sql2 = "update coffeeshop.chitiethoadon set SoLuong = " + soluong + " where SoHD = "
-									+ soHD + " and MaTU = " + MaTU;
-							Connection conn2 = DBConnection.getConnection();
-							Statement stm2 = conn2.createStatement();
-							stm2.executeUpdate(sql2);
-							stm2.close();
-							conn2.close();
-							// Cập nhật lại tổng tiền trong bảng hoá đơn
-							if (soHD > 0) {
-								loadOrdered(Integer.parseInt(tableID));
-								double trigia = Double.parseDouble(lblTotalPrice.getText());
-								conn = DBConnection.getConnection();
-								String sql = "UPDATE hoadon SET TriGia =" + trigia + "WHERE SoHD = " + soHD;
-								statement = conn.createStatement();
-								statement.executeUpdate(sql);
-								statement.close();
-								conn.close();
-								Message.messageBox("Cập nhật thành công", "THÔNG BÁO");
-							} else {
-								System.out.println("Error");
-							}
-						}
+							if (soluong < current) {
+								Message.messageBox("Số lượng không hợp lệ", "THÔNG BÁO");
+								soluong = current;
+								tableOrdered.setValueAt(soluong, index, 1);
+								tableModelOrdered.fireTableDataChanged();
 
+							} else {
+								gia = Double.parseDouble(tableOrdered.getValueAt(index, 4).toString());
+								tableOrdered.setValueAt((soluong * gia), index, 2);
+								tableModelOrdered.fireTableDataChanged();
+								// Lấy SoHD của bàn
+								String sql = "SELECT SoHD FROM coffeeshop.hoadon,chonban where hoadon.ThoiDiem = chonban.NgayGioDen and MaBan = "
+										+ tableID + " order by ThoiDiem desc limit 1;";
+								conn = DBConnection.getConnection();
+								statement = conn.createStatement();
+								rs = statement.executeQuery(sql);
+								if (rs.next()) {
+									soHD = rs.getInt(1);
+								}
+								if (soHD > 0) {
+									// Lưu thông tin thay đổi chitiethoadon xuống CSDL
+									int MaTU = Integer.parseInt(tableOrdered.getValueAt(index, 3).toString());
+									sql = "update coffeeshop.chitiethoadon set SoLuong = " + soluong + " where SoHD = "
+											+ soHD + " and MaTU = " + MaTU;
+									conn = DBConnection.getConnection();
+									statement = conn.createStatement();
+									statement.executeUpdate(sql);
+									// Cập nhật lại tổng tiền trong bảng hoá đơn
+									loadOrdered(Integer.parseInt(tableID));
+									double trigia = Double.parseDouble(lblTotalPrice.getText());
+									conn = DBConnection.getConnection();
+									sql = "UPDATE hoadon SET TriGia =" + trigia + "WHERE SoHD = " + soHD;
+									statement = conn.createStatement();
+									statement.executeUpdate(sql);
+									statement.close();
+									conn.close();
+									Message.messageBox("Cập nhật thành công", "THÔNG BÁO");
+								}else {
+									Message.messageBox("Bạn chưa chọn bàn hoặc bàn chưa có hoá đơn.", "THÔNG BÁO");
+								}
+
+							}
+
+						}
 					} catch (SQLException e1) {
 						// TODO Auto-generated catch block
 					}
 
 				} else {
-					if (soHD > 0) {
-						// Cập nhật lại tổng tiền
-						try {
-							double trigia = Double.parseDouble(lblTotalPrice.getText());
-							conn = DBConnection.getConnection();
-							String sql = "UPDATE hoadon SET TriGia =" + trigia + "WHERE SoHD = " + soHD;
-							statement = conn.createStatement();
-							statement.executeUpdate(sql);
-							statement.close();
-							conn.close();
-							Message.messageBox("Cập nhật lại tổng tiền thành công", "THÔNG BÁO");
-						} catch (SQLException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-					} else {
-						Message.messageBox("Vui lòng chọn bàn cần cập nhật", "THÔNG BÁO");
-					}
+					Message.messageBox("Không có sự thay đổi về số lượng", "THÔNG BÁO");
 				}
 				// Cập nhật lại tổng hoá đơn
 				int count = tableOrdered.getRowCount();
@@ -773,6 +767,7 @@ public class AdminFrame extends JFrame {
 					id = Integer.parseInt(tableID);
 					int index = tableDrink.getSelectedRow();
 					if (id > 0) {
+						soHD = -1;
 						String drinkName = lblDrinkName.getText();
 						int number = Integer.parseInt(txtQuantity.getText());
 						if (index != -1 && number > 0) {
@@ -793,58 +788,41 @@ public class AdminFrame extends JFrame {
 								int MaTU = Integer.parseInt(tableDrink.getValueAt(index, 2).toString());
 								DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 								Calendar calobj = Calendar.getInstance();
-
-								// Kiểm tra bàn đã có hoá đơn chưa
-								if (soHD <= 0) {
-									// Lấy số hoá đơn cuối cùng trong bảng để tạo ra số hoá đơn mới
-									String sql = "SELECT SoHD FROM hoadon ORDER BY SoHD DESC LIMIT 1";
-									conn = DBConnection.getConnection();
-									statement = conn.createStatement();
-									rs = statement.executeQuery(sql);
-									if (rs.next()) {
-										soHD = rs.getInt(1) + 1;
-									} else {
-										soHD = 1;
-									}
-
-									statement.close();
-									conn.close();
+								String sql = "SELECT SoHD FROM coffeeshop.hoadon,chonban where hoadon.ThoiDiem = chonban.NgayGioDen and MaBan = "
+										+ tableID + " order by ThoiDiem desc limit 1;";
+								conn = DBConnection.getConnection();
+								statement = conn.createStatement();
+								rs = statement.executeQuery(sql);
+								if (rs.next()) {
+									soHD = rs.getInt(1);
+								}
+								if (soHD > 0) {
+									// Thêm chi tiết hoá đơn vào csdl
 									if (soHD > 0) {
-										// Bàn chưa có hoá đơn, tạo ra số hoá đơn mới
-										df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-										calobj = Calendar.getInstance();
-										String thoidiem = df.format(calobj.getTime()).toString();
-										int MaNV = user.getId();
-										sql = "INSERT INTO hoadon VALUES(" + soHD + ",0.0," + MaNV + "," + MaKH + ",'"
-												+ thoidiem + "');";
+										// Thêm món
+										String sql2 = "insert into coffeeshop.chitiethoadon values(" + soHD + "," + MaTU
+												+ "," + number + ",'" + df.format(calobj.getTime()) + "')";
+										Connection conn2 = DBConnection.getConnection();
+										Statement stm2 = conn2.createStatement();
+										stm2.executeUpdate(sql2);
+										stm2.close();
+										conn2.close();
+
+										// Cập nhật lại tổng tiền trong bảng hoá đơn
+										double trigia = Double.parseDouble(lblTotalPrice.getText());
 										conn = DBConnection.getConnection();
+										sql = "UPDATE hoadon SET TriGia =" + trigia + "WHERE SoHD = " + soHD;
 										statement = conn.createStatement();
 										statement.executeUpdate(sql);
+										Message.messageBox("Thêm món thành công", "THÔNG BÁO");
 									}
-									statement.close();
-									rs.close();
-
+								} else {
+									Message.messageBox("Cập nhật thất bại", "THÔNG BÁO");
 								}
-								if (soHD > 0) {
-									// Thêm món
-									String sql2 = "insert into coffeeshop.chitiethoadon values(" + soHD + "," + MaTU
-											+ "," + number + ",'" + df.format(calobj.getTime()) + "')";
-									Connection conn2 = DBConnection.getConnection();
-									Statement stm2 = conn2.createStatement();
-									stm2.executeUpdate(sql2);
-								}
-								// Cập nhật lại tổng tiền trong bảng hoá đơn
-								if (soHD > 0) {
-									double trigia = Double.parseDouble(lblTotalPrice.getText());
-									conn = DBConnection.getConnection();
-									String sql = "UPDATE hoadon SET TriGia =" + trigia + "WHERE SoHD = " + soHD;
-									statement = conn.createStatement();
-									statement.executeUpdate(sql);
-									statement.close();
-									conn.close();
-								}
-								soHD = -1;
-								Message.messageBox("Thêm món thành công", "THÔNG BÁO");
+								rs.close();
+								statement.close();
+								conn.close();
+								//
 							} catch (SQLException e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
@@ -957,9 +935,9 @@ public class AdminFrame extends JFrame {
 			// cho phép gửi câu lệnh sql
 			String sql = "SELECT TenTU,GiaBan,chitiethoadon.SoLuong,Chitiethoadon.SoHD, thucuong.MaTU FROM"
 					+ " thucuong,chitiethoadon,hoadon,chonban,ban " + "WHERE thucuong.MaTU = chitiethoadon.MaTU "
-					+ "AND chitiethoadon.SoHD = hoadon.SoHD " + "AND hoadon.MaKH= chonban.MaKH "
+					+ "AND chitiethoadon.SoHD = hoadon.SoHD " + "AND hoadon.ThoiDIem= chonban.NgayGioDen "
 					+ "AND chonban.MaBan= ban.MaBan AND chonban.NgayGioTra IS NULL AND ban.MaBan=" + MaBan
-					+ " ORDER BY chonban.NgayGioDen";
+					+ " AND TriGia > 0 ORDER BY chonban.NgayGioDen";
 			rs = statement.executeQuery(sql);
 			if (rs != null) {
 				while (rs.next()) {

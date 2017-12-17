@@ -92,37 +92,47 @@ public class AddOrder extends JFrame {
 						Calendar calobj = Calendar.getInstance();
 						String thoidiem = df.format(calobj.getTime()).toString();
 
-						// Update bảng chọn bàn
-						String sql = "INSERT INTO chonban VALUES(" + MaKH + ",'" + thoidiem + "'," + tableID + ",NULL)";
-						conn = DBConnection.getConnection();
-						statement = conn.createStatement();
-						statement.executeUpdate(sql);
 						// Generate SoHD
 						int SoHD = -1;
-						sql = "SELECT SoHD FROM hoadon ORDER BY `SoHD` DESC LIMIT 1";
+						String sql = "SELECT SoHD FROM hoadon ORDER BY `SoHD` DESC LIMIT 1";
 						statement = conn.createStatement();
 						rs = statement.executeQuery(sql);
 						if (rs.next()) {
 							SoHD = rs.getInt(1) + 1;
+						} else {
+							SoHD = 1;
 						}
 						if (SoHD != -1) {
-							// Update bảng hoá đơn
-							sql = "INSERT INTO hoadon VALUES(" + SoHD + ", 0.0," + MaNV + "," + MaKH + ",'" + thoidiem
-									+ "')";
-							statement = conn.createStatement();
-							statement.executeUpdate(sql);
+							try {
+								// Update bảng chọn bàn
+								sql = "INSERT INTO chonban VALUES(" + MaKH + ",'" + thoidiem + "'," + tableID
+										+ ",NULL)";
+								conn = DBConnection.getConnection();
+								statement = conn.createStatement();
+								statement.executeUpdate(sql);
+
+								// Update bảng hoá đơn
+								sql = "INSERT INTO hoadon VALUES(" + SoHD + ", 0.0," + MaNV + "," + MaKH + ",'"
+										+ thoidiem + "')";
+								statement = conn.createStatement();
+								statement.executeUpdate(sql);
+								AdminFrame.soHD = SoHD;
+
+							} catch (SQLException ex2) {
+								// TODO: handle exception
+								Message.messageBox(ex2.getMessage(), "ERROR");
+								System.out.println(ex2.getMessage());
+							}
 						}
 						rs.next();
 						statement.close();
 						conn.close();
-						MaKH = -1;
 						dispose();
 						new AdminFrame();
 
 					} catch (SQLException e1) {
 						// TODO Auto-generated catch block
 						System.out.println(e1.getMessage());
-						// Message.messageBox("Lỗi thêm hoá đơn mới !!!", "THÔNG BÁO");
 					}
 
 				} catch (NumberFormatException e2) {
@@ -166,7 +176,7 @@ public class AddOrder extends JFrame {
 	private void loadCustomer() {
 
 		try {
-			String sql = "SELECT MaKH, HotenKH FROM khachhang where MaKH not in (select MaKH from chonban)";
+			String sql = "SELECT MaKH, HotenKH FROM khachhang where MaKH not in (SELECT MaKH FROM coffeeshop.chonban where NgayGioTra is null)";
 			conn = DBConnection.getConnection();
 			statement = conn.createStatement();
 			rs = statement.executeQuery(sql);

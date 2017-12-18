@@ -67,7 +67,7 @@ CREATE TABLE `chitiethoadon` (
 
 /*Data for the table `chitiethoadon` */
 
-insert  into `chitiethoadon`(`SoHD`,`MaTU`,`SoLuong`,`NgayLap`) values (1,6,1,'2017-12-15 23:38:29'),(3,8,1,'2017-12-15 23:38:43'),(5,3,2,'2017-12-16 09:23:45'),(5,7,2,'2017-12-16 09:23:39');
+insert  into `chitiethoadon`(`SoHD`,`MaTU`,`SoLuong`,`NgayLap`) values (1,1,1,'2017-12-17 10:09:29'),(1,3,2,'2017-12-17 10:09:48'),(2,3,2,'2017-12-17 10:10:35'),(3,5,2,'2017-12-17 10:16:13'),(3,7,1,'2017-12-17 10:56:05');
 
 /*Table structure for table `chitiethoadonmangve` */
 
@@ -119,6 +119,7 @@ CREATE TABLE `chonban` (
   `MaBan` int(10) unsigned NOT NULL,
   `NgayGioTra` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`MaKH`,`NgayGioDen`),
+  UNIQUE KEY `NgayGioDen_UNIQUE` (`NgayGioDen`),
   KEY `FK_CHONBAN_BAN` (`MaBan`),
   CONSTRAINT `FK_CHONBAN_BAN` FOREIGN KEY (`MaBan`) REFERENCES `ban` (`MaBan`),
   CONSTRAINT `FK_CHONBAN_KHACHHANG` FOREIGN KEY (`MaKH`) REFERENCES `khachhang` (`MaKH`)
@@ -126,7 +127,7 @@ CREATE TABLE `chonban` (
 
 /*Data for the table `chonban` */
 
-insert  into `chonban`(`MaKH`,`NgayGioDen`,`MaBan`,`NgayGioTra`) values (1,'2017-12-15 23:38:40',3,NULL),(2,'2017-12-16 09:23:33',4,NULL),(28,'2017-12-15 23:38:26',1,NULL);
+insert  into `chonban`(`MaKH`,`NgayGioDen`,`MaBan`,`NgayGioTra`) values (28,'2017-12-17 09:51:25',1,'2017-12-17 10:11:05'),(28,'2017-12-17 10:10:29',1,'2017-12-17 10:11:05'),(28,'2017-12-17 10:16:10',1,NULL);
 
 /*Table structure for table `hoadon` */
 
@@ -139,14 +140,15 @@ CREATE TABLE `hoadon` (
   `MaKH` int(10) unsigned NOT NULL,
   `ThoiDiem` datetime NOT NULL,
   PRIMARY KEY (`SoHD`),
-  KEY `FK_HOADON_CHONBAN` (`MaKH`),
-  CONSTRAINT `FK_HOADON_CHONBAN` FOREIGN KEY (`MaKH`) REFERENCES `chonban` (`MaKH`),
-  CONSTRAINT `FK_HOADON_NHANVIEN` FOREIGN KEY (`MaKH`) REFERENCES `nhanvien` (`MaNV`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  UNIQUE KEY `ThoiDiem_UNIQUE` (`ThoiDiem`),
+  KEY `FK_HOADON_NHANVIEN` (`MaNV`),
+  CONSTRAINT `FK_HOADON_CHONBAN` FOREIGN KEY (`ThoiDiem`) REFERENCES `chonban` (`NgayGioDen`),
+  CONSTRAINT `FK_HOADON_NHANVIEN` FOREIGN KEY (`MaNV`) REFERENCES `nhanvien` (`MaNV`)
 ) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*Data for the table `hoadon` */
 
-insert  into `hoadon`(`SoHD`,`TriGia`,`MaNV`,`MaKH`,`ThoiDiem`) values (1,25000,1,28,'2017-12-15 23:38:29'),(2,0,1,1,'2017-12-15 23:38:40'),(3,25000,1,1,'2017-12-15 23:38:43'),(4,0,1,2,'2017-12-16 09:23:33'),(5,86000,1,2,'2017-12-16 09:23:39');
+insert  into `hoadon`(`SoHD`,`TriGia`,`MaNV`,`MaKH`,`ThoiDiem`) values (1,61000,1,28,'2017-12-17 09:51:25'),(2,36000,1,28,'2017-12-17 10:10:29'),(3,65000,1,28,'2017-12-17 10:16:10');
 
 /*Table structure for table `hoadonmangve` */
 

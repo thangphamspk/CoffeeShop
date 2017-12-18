@@ -170,7 +170,7 @@ public class AddOrder extends JFrame {
 		setLocationRelativeTo(null);
 		setVisible(true);
 		loadCustomer();
-		cbxCustomer.setSelectedIndex(27);
+		cbxCustomer.setSelectedIndex(1);
 	}
 
 	private void loadCustomer() {

@@ -239,7 +239,7 @@ public class SupplierManager extends JFrame {
 		cbxSupplierID.setEditable(false);
 		cbxSupplierID.setEnabled(false);
 		cbxSupplierID.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		cbxSupplierID.setBounds(201, 17, 50, 30);
+		cbxSupplierID.setBounds(201, 17, 70, 30);
 		cbxSupplierID.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {

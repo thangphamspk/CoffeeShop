@@ -660,6 +660,8 @@ public class AdminFrame extends JFrame {
 						int current = (int) (tt / gia);
 						if (soluong <= current) {
 							Message.messageBox("Số lượng không được nhỏ hơn số lượng hiện tại.", "THÔNG BÁO");
+							tableOrdered.setValueAt(current, index, 1);
+							tableModelOrdered.fireTableDataChanged();
 						} else {
 							if (soluong < current) {
 								Message.messageBox("Số lượng không hợp lệ", "THÔNG BÁO");
@@ -670,6 +672,7 @@ public class AdminFrame extends JFrame {
 							} else {
 								gia = Double.parseDouble(tableOrdered.getValueAt(index, 4).toString());
 								tableOrdered.setValueAt((soluong * gia), index, 2);
+								tableOrdered.setValueAt(soluong, index, 1);
 								tableModelOrdered.fireTableDataChanged();
 								// Lấy SoHD của bàn
 								String sql = "SELECT SoHD FROM coffeeshop.hoadon,chonban where hoadon.ThoiDiem = chonban.NgayGioDen and MaBan = "
@@ -698,7 +701,7 @@ public class AdminFrame extends JFrame {
 									statement.close();
 									conn.close();
 									Message.messageBox("Cập nhật thành công", "THÔNG BÁO");
-								}else {
+								} else {
 									Message.messageBox("Bạn chưa chọn bàn hoặc bàn chưa có hoá đơn.", "THÔNG BÁO");
 								}
 
@@ -707,6 +710,13 @@ public class AdminFrame extends JFrame {
 						}
 					} catch (SQLException e1) {
 						// TODO Auto-generated catch block
+					} catch (NumberFormatException e2) {
+						Message.messageBox("Số lượng không hợp lệ", "THÔNG BÁO");
+						double tt = Double.parseDouble(tableOrdered.getValueAt(index, 2).toString());
+						double gia = Double.parseDouble(tableOrdered.getValueAt(index, 4).toString());
+						int current = (int) (tt / gia);
+						tableOrdered.setValueAt(current, index, 1);
+						tableModelOrdered.fireTableDataChanged();
 					}
 
 				} else {

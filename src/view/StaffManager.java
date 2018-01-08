@@ -226,7 +226,7 @@ public class StaffManager extends JFrame {
 		txtBirthday = new JTextField();
 		txtBirthday.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		txtBirthday.setColumns(10);
-		txtBirthday.setBounds(702, 62, 252, 30);
+		txtBirthday.setBounds(702, 62, 237, 30);
 		txtBirthday.setEditable(false);
 		editablePanel.add(txtBirthday);
 
@@ -256,13 +256,13 @@ public class StaffManager extends JFrame {
 
 		JLabel lblPhoneNumber = new JLabel("Điện thoại :");
 		lblPhoneNumber.setFont(new Font("Tahoma", Font.BOLD, 16));
-		lblPhoneNumber.setBounds(263, 16, 102, 30);
+		lblPhoneNumber.setBounds(275, 18, 102, 30);
 		editablePanel.add(lblPhoneNumber);
 
 		txtPhoneNumber = new JTextField();
 		txtPhoneNumber.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		txtPhoneNumber.setColumns(10);
-		txtPhoneNumber.setBounds(377, 16, 150, 30);
+		txtPhoneNumber.setBounds(377, 18, 150, 30);
 		txtPhoneNumber.setEditable(false);
 		editablePanel.add(txtPhoneNumber);
 
@@ -273,19 +273,19 @@ public class StaffManager extends JFrame {
 
 		JLabel lblStatus = new JLabel("Trạng thái :");
 		lblStatus.setFont(new Font("Tahoma", Font.BOLD, 18));
-		lblStatus.setBounds(774, 108, 115, 30);
+		lblStatus.setBounds(742, 108, 115, 30);
 		editablePanel.add(lblStatus);
 
 		cbxGender = new JComboBox<String>();
 		cbxGender.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		cbxGender.setBounds(702, 108, 60, 30);
+		cbxGender.setBounds(660, 110, 83, 30);
 		cbxGender.setSelectedItem(null);
 		cbxGender.setEnabled(false);
 		editablePanel.add(cbxGender);
 
 		cbxStatus = new JComboBox<String>();
 		cbxStatus.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		cbxStatus.setBounds(888, 108, 94, 30);
+		cbxStatus.setBounds(851, 108, 131, 30);
 		cbxStatus.setSelectedItem(null);
 		cbxStatus.setEnabled(false);
 		editablePanel.add(cbxStatus);
@@ -300,7 +300,7 @@ public class StaffManager extends JFrame {
 		cbxStaffID.setEditable(false);
 		cbxStaffID.setEnabled(false);
 		cbxStaffID.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		cbxStaffID.setBounds(189, 16, 50, 30);
+		cbxStaffID.setBounds(189, 18, 74, 30);
 		cbxStaffID.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
@@ -317,7 +317,7 @@ public class StaffManager extends JFrame {
 
 		// TODO: Quản lý chọn ngày sinh nhân viên
 		getDate = new JDateChooser();
-		getDate.setBounds(962, 62, 20, 30);
+		getDate.setBounds(945, 62, 31, 30);
 		getDate.addPropertyChangeListener("date", new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent e) {
 				JDateChooser chooser = (JDateChooser) e.getSource();

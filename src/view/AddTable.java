@@ -62,7 +62,7 @@ public class AddTable extends JFrame {
 		cbxArea = new JComboBox<Integer>();
 		cbxArea.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		cbxArea.setEditable(false);
-		cbxArea.setBounds(118, 88, 50, 30);
+		cbxArea.setBounds(118, 88, 70, 30);
 		contentPane.add(cbxArea);
 
 		btnAddTable = new JButton("Thêm bàn");

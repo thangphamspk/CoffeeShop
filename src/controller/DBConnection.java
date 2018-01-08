@@ -10,7 +10,7 @@ public class DBConnection {
 
 	public static Connection getConnection() {
 		try {
-			String Url = "jdbc:mysql://localhost/CoffeeShop?user=root&password=123456&useSSL=true&charset=utf8";
+			String Url = "jdbc:mysql://localhost/CoffeeShop?user=root&password=123456&useSSL=true&charset=utf8&characterEncoding=UTF-8";
 			conn = DriverManager.getConnection(Url);
 		} catch (SQLException ex) {
 			// TODO: handle exception

@@ -237,13 +237,13 @@ public class CustomerManager extends JFrame {
 
 		JLabel lblPhoneNumber = new JLabel("Điện thoại :");
 		lblPhoneNumber.setFont(new Font("Tahoma", Font.BOLD, 16));
-		lblPhoneNumber.setBounds(263, 16, 102, 30);
+		lblPhoneNumber.setBounds(286, 16, 102, 30);
 		editablePanel.add(lblPhoneNumber);
 
 		txtPhoneNumber = new JTextField();
 		txtPhoneNumber.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		txtPhoneNumber.setColumns(10);
-		txtPhoneNumber.setBounds(377, 16, 150, 30);
+		txtPhoneNumber.setBounds(387, 16, 140, 30);
 		txtPhoneNumber.setEditable(false);
 		editablePanel.add(txtPhoneNumber);
 
@@ -254,14 +254,14 @@ public class CustomerManager extends JFrame {
 
 		cbxGender = new JComboBox<String>();
 		cbxGender.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		cbxGender.setBounds(702, 108, 60, 30);
+		cbxGender.setBounds(667, 108, 85, 30);
 		cbxGender.setSelectedItem(null);
 		cbxGender.setEnabled(false);
 		editablePanel.add(cbxGender);
 
 		JLabel lblTypeOfCustomer = new JLabel("Loại khách :");
 		lblTypeOfCustomer.setFont(new Font("Tahoma", Font.BOLD, 18));
-		lblTypeOfCustomer.setBounds(774, 108, 115, 30);
+		lblTypeOfCustomer.setBounds(764, 104, 115, 30);
 		editablePanel.add(lblTypeOfCustomer);
 
 		cbxTypeOfCustomer = new JComboBox<String>();
@@ -269,7 +269,7 @@ public class CustomerManager extends JFrame {
 		cbxTypeOfCustomer.setEditable(false);
 		cbxTypeOfCustomer.setEnabled(false);
 		cbxTypeOfCustomer.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		cbxTypeOfCustomer.setBounds(895, 109, 60, 30);
+		cbxTypeOfCustomer.setBounds(891, 109, 91, 30);
 		cbxTypeOfCustomer.setSelectedItem(null);
 		cbxTypeOfCustomer.setEnabled(false);
 		cbxTypeOfCustomer.addItemListener(new ItemListener() {
@@ -297,7 +297,7 @@ public class CustomerManager extends JFrame {
 		cbxCustomerID.setEditable(false);
 		cbxCustomerID.setEnabled(false);
 		cbxCustomerID.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		cbxCustomerID.setBounds(189, 16, 50, 30);
+		cbxCustomerID.setBounds(189, 16, 72, 30);
 		cbxCustomerID.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {

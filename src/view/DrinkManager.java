@@ -297,7 +297,7 @@ public class DrinkManager extends JFrame {
 				cbxDrinkID.setEditable(false);
 				cbxDrinkID.setEnabled(false);
 				cbxDrinkID.setFont(new Font("Tahoma", Font.PLAIN, 16));
-				cbxDrinkID.setBounds(189, 16, 50, 30);
+				cbxDrinkID.setBounds(189, 16, 72, 30);
 				cbxDrinkID.addItemListener(new ItemListener() {
 					@Override
 					public void itemStateChanged(ItemEvent e) {
